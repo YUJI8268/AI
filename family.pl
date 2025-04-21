@@ -1,14 +1,15 @@
-Prolog rules and facts goes below
 male(jack).
 male(oliver).
 male(ali).
 male(james).
 male(simon).
 male(harry).
+
 female(helen).
 female(sophie).
 female(jess).
 female(lily).
+
 parent_of(jack, jess).
 parent_of(jack, lily).
 parent_of(helen, jess).
@@ -19,61 +20,64 @@ parent_of(jess, simon).
 parent_of(ali, simon).
 parent_of(lily, harry).
 parent_of(james, harry).
+
 father_of(X, Y) :-
- male(X),
- parent_of(X, Y).
+    male(X),
+    parent_of(X, Y).
+
 mother_of(X, Y) :-
- female(X),
- parent_of(X, Y).
+    female(X),
+    parent_of(X, Y).
+
 grandfather_of(X, Y) :-
- male(X),
- parent_of(X, Z),
- parent_of(Z, Y).
+    male(X),
+    parent_of(X, Z),
+    parent_of(Z, Y).
+
 grandmother_of(X, Y) :-
- female(X),
- parent_of(X, Z),
- parent_of(Z, Y).
+    female(X),
+    parent_of(X, Z),
+    parent_of(Z, Y).
+
 sister_of(X, Y) :-
- female(X),
- parent_of(F, Y),
- parent_of(F, X),
- X \= Y.
+    female(X),
+    parent_of(F, Y),
+    parent_of(F, X),
+    X \= Y.
+
 brother_of(X, Y) :-
- male(X),
- parent_of(F, Y),
- parent_of(F, X),
- X \= Y.
+    male(X),
+    parent_of(F, Y),
+    parent_of(F, X),
+    X \= Y.
+
 aunt_of(X, Y) :-
- female(X),
- parent_of(Z, Y),
- sister_of(Z, X).
+    female(X),
+    parent_of(Z, Y),
+    sister_of(X, Z).
+
 uncle_of(X, Y) :-
- parent_of(Z, Y),
- brother_of(Z, X).
+    male(X),
+    parent_of(Z, Y),
+    brother_of(X, Z).
+
 ancestor_of(X, Y) :-
- parent_of(X, Y).
+    parent_of(X, Y).
+
 ancestor_of(X, Y) :-
- parent_of(X, Z),
- ancestor_of(Z, Y).
-% Predicate to print the family tree
+    parent_of(X, Z),
+    ancestor_of(Z, Y).
+
 print_family_tree(Person) :-
- write('Family tree for '), write(Person), write(':'), nl,
- print_family_tree_helper(Person, 0).
+    write('Family tree for '), write(Person), write(':'), nl,
+    print_family_tree_helper(Person, 0).
+
 print_family_tree_helper(Person, Tabs) :-
- Tabs >= 0,
- format('~*c', [Tabs, 32]), % 32 is ASCII code for space
- write(Person), nl,
- ( father_of(Person, Child) ;
- mother_of(Person, Child)
- ),
- NextTabs is Tabs + 4,
- print_family_tree_helper(Child, NextTabs).
-
-
-
- Prolog query goes here
-
- grandmother_of(X,harry)
-
-
- Run this on swish prolog website
+    Tabs >= 0,
+    format('~*c', [Tabs, 32]),
+    write(Person), nl,
+    (father_of(Person, Child); mother_of(Person, Child)),
+    NextTabs is Tabs + 4,
+    print_family_tree_helper(Child, NextTabs).
+    
+% grandmother_of(X, harry).
